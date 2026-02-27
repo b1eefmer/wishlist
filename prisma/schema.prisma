@@ -1,0 +1,91 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Note that some adapters may set a maximum length for the String type by default, please ensure your strings are long
+// enough when changing adapters.
+// See https://www.prisma.io/docs/orm/reference/prisma-schema-reference#string for more information
+datasource db {
+  provider = "sqlite"
+  url      = "file:dev.sqlite"
+}
+
+model Session {
+  id            String    @id
+  shop          String
+  state         String
+  isOnline      Boolean   @default(false)
+  scope         String?
+  expires       DateTime?
+  accessToken   String
+  userId        BigInt?
+  firstName     String?
+  lastName      String?
+  email         String?
+  accountOwner  Boolean   @default(false)
+  locale        String?
+  collaborator  Boolean?  @default(false)
+  emailVerified Boolean?  @default(false)
+  refreshToken        String?
+  refreshTokenExpires DateTime?
+}
+
+model Plan {
+  id                 String   @id
+  name               String    
+  test               Boolean
+  trial_days         Int
+  price_amount       String
+  rice_currency_code String
+  price_period       String
+  createdAt          DateTime @default(now())
+}
+
+model Shop {
+  id                      String   @id
+  shop                    String
+  plan_id                 Int      @default(1)
+  shopify_subscription_id String?
+  coupon_code             String?
+  usage_count             Int      @default(0)
+  iid                     String?
+  createdAt               DateTime @default(now())
+}
+
+model Customermeta {
+  id          Int      @id @default(autoincrement())
+  store_id    Int
+  customer_id String
+  namespace   String
+  key         String
+  value       String
+  createdAt   DateTime @default(now())
+}
+
+model Customer {
+  id          Int      @id @default(autoincrement())
+  store_id    Int
+  customer_id String
+  first_name  String?
+  last_name   String?
+  email       String?
+  phone       String?
+  createdAt   DateTime @default(now())
+}
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  store_id    Int
+  product_id  String
+  title       String?
+  type        String?
+  handle      String?
+  vendor      String?
+  image_src   String?
+  sku         String?
+  price       String?
+  createdAt   DateTime @default(now())
+}

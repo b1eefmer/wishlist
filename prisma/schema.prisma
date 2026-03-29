@@ -34,18 +34,21 @@ model Session {
 }
 
 model Plan {
-  id                 String   @id
-  name               String    
-  test               Boolean
-  trial_days         Int
-  price_amount       String
-  rice_currency_code String
-  price_period       String
-  createdAt          DateTime @default(now())
+  id                  Int      @id @default(autoincrement())
+  name                String
+  test                Boolean
+  trial_days          Int
+  price_amount        String
+  price_currency_code String
+  price_period        String
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  shops               Shop[]
 }
 
 model Shop {
-  id                      String   @id
+  id                      Int      @id @default(autoincrement())
   shop                    String
   plan_id                 Int      @default(1)
   shopify_subscription_id String?
@@ -53,16 +56,16 @@ model Shop {
   usage_count             Int      @default(0)
   iid                     String?
   createdAt               DateTime @default(now())
-}
+  updatedAt               DateTime @updatedAt
 
-model Customermeta {
-  id          Int      @id @default(autoincrement())
-  store_id    Int
-  customer_id String
-  namespace   String
-  key         String
-  value       String
-  createdAt   DateTime @default(now())
+  plan                    Plan     @relation(fields: [plan_id], references: [id])
+
+  customers               Customer[]
+  products                Product[]
+  customermetas           Customermeta[]
+
+  @@index([shop])
+  @@index([plan_id])
 }
 
 model Customer {
@@ -74,6 +77,29 @@ model Customer {
   email       String?
   phone       String?
   createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  shop        Shop     @relation(fields: [store_id], references: [id])
+
+  @@index([store_id])
+  @@index([customer_id])
+}
+
+model Customermeta {
+  id          Int      @id @default(autoincrement())
+  store_id    Int
+  customer_id String
+  namespace   String
+  key         String
+  value       String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  shop        Shop     @relation(fields: [store_id], references: [id])
+
+  @@index([store_id])
+  @@index([customer_id])
+  @@index([namespace, key])
 }
 
 model Product {
@@ -88,4 +114,11 @@ model Product {
   sku         String?
   price       String?
   createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  shop        Shop     @relation(fields: [store_id], references: [id])
+
+  @@index([store_id])
+  @@index([product_id])
+  @@index([handle])
 }

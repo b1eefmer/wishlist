@@ -1,0 +1,369 @@
+{%- if customer.id == null -%}
+  {%- assign locCustomerId = 'guest' -%}
+{%- else -%}
+  {%- assign locCustomerId = customer.id -%}
+{%- endif -%}
+
+<loo-lists-bar
+  class="loo-lists-bar loo-pf loo-{{ block.settings.sidebar_position }}"
+  data-customer-id="{{ locCustomerId }}"
+  data-iid="{{ shop.metafields.loolistsapp.iid.value }}"
+  data-url="{{ shop.metafields.loolistsapp.appurl.value }}"
+  data-shop="{{ shop.permanent_domain }}"
+  data-domain="{{ shop.domain }}"
+  style="
+    background-color: {{ block.settings.sidebar_bg_color }};
+    border: {{ block.settings.sidebar_border_color }} solid {{ block.settings.sidebar_border_width }}px;
+    border-radius: {{ block.settings.sidebar_border_radius }}px;
+    padding: {{ block.settings.sidebar_padding }}px;
+    margin: {{ block.settings.sidebar_margin }}px;
+  "
+>
+  <a href="#" class="loo-db loo-list-icon js-popup-button" data-js-list="loo-wishlist">
+    {% liquid
+      if block.settings.icon == 'solid'
+        render 'icon-heart-solid', fillColor: block.settings.icon_color, iconWidth: block.settings.icon_width
+      endif
+      if block.settings.icon == 'regular'
+        render 'icon-heart-regular', fillColor: block.settings.icon_color, iconWidth: block.settings.icon_width
+      endif
+    %}
+    <span
+      class="loo-count"
+      style="
+        color: {{ block.settings.counter_color }};
+        background-color: {{ block.settings.counter_bg_color }};
+        padding: {{ block.settings.counter_padding }}px;
+        border-radius: {{ block.settings.counter_radius }}px;
+        font-size: {{ block.settings.counter_font_size }}px;
+        line-height: {{ block.settings.counter_font_size }}px;
+        min-width: {{ block.settings.counter_font_size | plus: block.settings.counter_padding | plus: block.settings.counter_padding }}px;
+        margin-right: -{{ block.settings.counter_offset }}px;
+      "
+      >0</span
+    ></a
+  >
+  {% comment %}
+    <a href="#" class="loo-db loo-list-icon js-popup-button" data-js-list="loo-compare"
+      >Compare - <span class="loo-count">0</span></a
+    >
+    <a href="#" onClick="window.looListDataStorage.test()">Test function</a>
+  {% endcomment %}
+</loo-lists-bar>
+<loo-popup class="loo-popup" data-js-open="false">
+  <div
+    class="loo-popup-container"
+    style="
+      background-color: {{ block.settings.popup_bg_color }};
+      border: {{ block.settings.popup_border_color }} solid {{ block.settings.popup_border_width }}px;
+      border-radius: {{ block.settings.popup_border_radius }}px;
+    "
+  >
+    <div class="loo-popup-header">
+      <h2
+        class="loo-popup-title"
+        style="color: {{ block.settings.popup_heading }};"
+      ></h2>
+      <a href="#" class="js-popup-close loo-popup-close">
+        {% if block.settings.close_icon == 'thin' %}
+          {% render 'icon-xmark-thin', fillColor: block.settings.popup_heading %}
+        {% else %}
+          {% render 'icon-xmark-solid', fillColor: block.settings.popup_heading %}
+        {% endif %}
+      </a>
+    </div>
+    <style>
+      .loo-popup-body a, .loo-popup-body {
+        color: {{ block.settings.popup_link }};
+      }
+      .loo-popup-body a {
+        text-decoration: none;
+      }
+      .loo-popup-body a:hover .loo-wishlist-item-title {
+        text-decoration: underline;
+        text-decoration-color: {{ block.settings.popup_link }};
+      }
+      .loo-popup-body img {
+        border-radius: {{ block.settings.popup_image_radius }}px;
+      }
+    </style>
+    <div class="loo-popup-body"></div>
+  </div>
+  <div
+    class="loo-popup-backdrop"
+    style="    background-color: {{ block.settings.popup_backdrop }};"
+  ></div>
+</loo-popup>
+
+{% schema %}
+{
+  "name": "Popup & Sidebar",
+  "target": "body",
+  "stylesheet": "popup.css",
+  "javascript": "popup.js",
+  "settings": [
+    {
+      "type": "header",
+      "content": "ICON"
+    },
+    {
+      "type": "range",
+      "id": "icon_width",
+      "label": "Width",
+      "min": 16,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "label": "Type",
+      "id": "icon",
+      "type": "select",
+      "options": [
+        {
+          "value": "regular",
+          "label": "Regular"
+        },
+        {
+          "value": "solid",
+          "label": "Solid"
+        }
+      ],
+      "default": "regular"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon color",
+      "default": "#EA3C53"
+    },
+
+    {
+      "type": "header",
+      "content": "COUNTER"
+    },
+
+    {
+      "type": "range",
+      "id": "counter_font_size",
+      "label": "Font size",
+      "min": 8,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 11
+    },
+    {
+      "type": "range",
+      "id": "counter_padding",
+      "label": "Padding",
+      "min": 0,
+      "max": 15,
+      "step": 1,
+      "unit": "px",
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "counter_radius",
+      "label": "Radius",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "counter_offset",
+      "label": "Offset",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "default": 4
+    },
+    {
+      "type": "color",
+      "id": "counter_color",
+      "label": "Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "counter_bg_color",
+      "label": "Background",
+      "default": "#EA3C53"
+    },
+    {
+      "type": "header",
+      "content": "SIDEBAR"
+    },
+    {
+      "label": "Position",
+      "id": "sidebar_position",
+      "type": "select",
+      "options": [
+        {
+          "value": "topleft",
+          "label": "Top left"
+        },
+        {
+          "value": "centerleft",
+          "label": "Center left"
+        },
+        {
+          "value": "bottomleft",
+          "label": "Bottom left"
+        },
+        {
+          "value": "topright",
+          "label": "Top right"
+        },
+        {
+          "value": "centerright",
+          "label": "Center right"
+        },
+        {
+          "value": "bottomright",
+          "label": "Bottom right"
+        }
+      ],
+      "default": "centerright"
+    },
+    {
+      "type": "range",
+      "id": "sidebar_border_width",
+      "label": "Border width",
+      "min": 0,
+      "max": 3,
+      "step": 1,
+      "unit": "px",
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "sidebar_border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "default": 140
+    },
+    {
+      "type": "range",
+      "id": "sidebar_padding",
+      "label": "Padding",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "sidebar_margin",
+      "label": "Margin",
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "color",
+      "id": "sidebar_bg_color",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "sidebar_border_color",
+      "label": "Border",
+      "default": "#EA3C53"
+    },
+    {
+      "type": "header",
+      "content": "POPUP"
+    },
+    {
+      "type": "range",
+      "id": "popup_border_radius",
+      "label": "Radius corner",
+      "min": 0,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "popup_border_width",
+      "label": "Border width",
+      "min": 0,
+      "max": 3,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "color",
+      "id": "popup_bg_color",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "popup_border_color",
+      "label": "Border",
+      "default": "#e7e7e7"
+    },
+    {
+      "type": "color",
+      "id": "popup_heading",
+      "label": "Heading",
+      "default": "#121212"
+    },
+    {
+      "label": "Close icon",
+      "id": "close_icon",
+      "type": "select",
+      "options": [
+        {
+          "value": "thin",
+          "label": "Thin"
+        },
+        {
+          "value": "solid",
+          "label": "Solid"
+        }
+      ],
+      "default": "thin"
+    },
+    {
+      "type": "range",
+      "id": "popup_image_radius",
+      "label": "Image radius corner",
+      "min": 0,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "color",
+      "id": "popup_link",
+      "label": "Text",
+      "default": "#121212"
+    },
+    {
+      "type": "color",
+      "id": "popup_backdrop",
+      "label": "Backdrop background",
+      "default": "#FDF2F4"
+    }
+  ]
+}
+{% endschema %}

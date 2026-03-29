@@ -1,0 +1,121 @@
+{% comment %} Button container {% endcomment %}
+<div
+  class="loo-prodpage-buttons-container loo-gap30 loo-rgap0"
+  style="
+    --loo-text_color:{{ block.settings.text_color }};
+    --loo-added_text_color:{{ block.settings.added_text_color }};
+    --loo-text_size:{{ block.settings.text_size }}px;
+    --loo-icon_color:{{ block.settings.icon_color }};
+    --loo-added_icon_color:{{ block.settings.added_icon_color }};
+    --loo-icon_width:{{ block.settings.icon_width }}px;
+  "
+
+  {% if template.name contains 'product' %}
+    data-product-id="{{ product.id }}"
+    data-product-handle="{{ product.handle }}"
+    data-product-image="{{ product.featured_image | image_url: width: 265 }}"
+    data-product-image2x="{{ product.featured_image | image_url: width: 530 }}"
+    data-product-url="{{ product.url }}"
+    data-product-title="{{ product.title }}"
+    data-product-price="{{ product.price | money }}"
+  {% elsif template.name contains 'collection' %}
+    data-product-id="{{ collection.id }}"
+    data-product-handle="{{ collection.handle }}"
+    data-product-image="{{ collection.image | image_url: width: 265 }}"
+    data-product-image2x="{{ collection.image | image_url: width: 530 }}"
+    data-product-url="{{ collection.url }}"
+    data-product-title="{{ collection.title }}"
+    data-product-price=""
+  {% elsif template.name contains 'article' %}
+    data-product-id="{{ article.id }}"
+    data-product-handle="{{ article.handle }}"
+    data-product-image="{{ article.image | image_url: width: 265 }}"
+    data-product-image2x="{{ article.image | image_url: width: 530 }}"
+    data-product-url="{{ article.url }}"
+    data-product-title="{{ article.title }}"
+    data-product-price=""
+  {% elsif template.name contains 'page' %}
+    data-product-id="{{ page.id }}"
+    data-product-handle="{{ page.handle }}"
+    data-product-image=""
+    data-product-image2x=""
+    data-product-url="{{ page.url }}"
+    data-product-title="{{ page.title }}"
+    data-product-price=""
+  {% endif %}
+>
+  {% comment %} Wishlist button {% endcomment %}
+  <loo-prodpage-button
+    class="loo-prodpage-button"
+    data-key="loo-wishlist"
+    data-page="/pages/loo-wishlist"
+  >
+    {% render 'icon-heart-regular', cssClass: 'loo-regular' %}
+    {% render 'icon-heart-solid', cssClass: 'loo-active' %}
+    <span class="loo-regular">Add to wishlist</span>
+    <span class="loo-active">Remove from wishlist</span>
+  </loo-prodpage-button>
+</div>
+
+{% schema %}
+{
+  "name": "Wishlist button",
+  "target": "section",
+  "stylesheet": "buttons.css",
+  "javascript": "buttons.js",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Text"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#121212"
+    },
+    {
+      "type": "color",
+      "id": "added_text_color",
+      "label": "Added text color",
+      "default": "#121212"
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "label": "Text size",
+      "min": 12,
+      "max": 36,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Icon"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon color",
+      "default": "#EA3C53"
+    },
+    {
+      "type": "color",
+      "id": "added_icon_color",
+      "label": "Added icon color",
+      "default": "#EA3C53"
+    },
+    {
+      "type": "range",
+      "id": "icon_width",
+      "label": "Icon width",
+      "min": 16,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    }
+  ]
+}
+{% endschema %}

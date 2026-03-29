@@ -1,41 +1,45 @@
+import type { LoaderFunctionArgs } from "react-router";
+import { useLoaderData } from "react-router";
+import { authenticate } from "../shopify.server";
+import { getWishlistTopProducts } from "../wishlist.server";
+
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  const { session } = await authenticate.admin(request);
+  const items = await getWishlistTopProducts(session.shop, "wishlist");
+
+  return {
+    items,
+  };
+};
+
 export default function AdditionalPage() {
+  const { items } = useLoaderData<typeof loader>();
+
   return (
     <s-page heading="Basic Wishlist">
-      <s-section heading="Total">
-        <s-grid
-          gridTemplateColumns="repeat(2, 1fr)"
-          gap="small"
-          justifyContent="center"
-        >
-          <s-grid-item gridColumn="span 1" padding="large">
-            <s-paragraph>
-              <s-text>0 </s-text>
-              <s-text>products</s-text>
-            </s-paragraph>
-          </s-grid-item>
-          <s-grid-item gridColumn="auto" padding="large">
-            <s-text>0 </s-text>
-            <s-text>customers</s-text>
-          </s-grid-item>
-        </s-grid>
-      </s-section>
       <s-section heading="Top products">
-        <s-table>
-          <s-table-header-row>
-            <s-table-header>Product</s-table-header>
-            <s-table-header>Vendor</s-table-header>
-            <s-table-header>Type</s-table-header>
-            <s-table-header format="numeric">Count</s-table-header>
-          </s-table-header-row>
-          <s-table-body>
-            <s-table-row>
-              <s-table-cell>The Collection Snowbo</s-table-cell>
-              <s-table-cell>Hydrogen Vendor</s-table-cell>
-              <s-table-cell>snowboard</s-table-cell>
-              <s-table-cell>1</s-table-cell>
-            </s-table-row>
-          </s-table-body>
-        </s-table>
+        {items.length ? (
+          <s-table>
+            <s-table-header-row>
+              <s-table-header>Product</s-table-header>
+              <s-table-header>Vendor</s-table-header>
+              <s-table-header>Price</s-table-header>
+              <s-table-header format="numeric">Count</s-table-header>
+            </s-table-header-row>
+            <s-table-body>
+              {items.map((item) => (
+                <s-table-row key={item.handle}>
+                  <s-table-cell>{item.product.title || item.handle}</s-table-cell>
+                  <s-table-cell>{item.product.vendor || "-"}</s-table-cell>
+                  <s-table-cell>{item.product.price || "-"}</s-table-cell>
+                  <s-table-cell>{item.count}</s-table-cell>
+                </s-table-row>
+              ))}
+            </s-table-body>
+          </s-table>
+        ) : (
+          <s-paragraph>No product data yet.</s-paragraph>
+        )}
       </s-section>
     </s-page>
   );

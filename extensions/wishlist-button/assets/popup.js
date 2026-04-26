@@ -88,6 +88,7 @@ class LooDataStorage {
             localStorage.setItem(list, JSON.stringify({}));
         });
         this._loadListsBar();
+        this._loadButtonsState();
     }
     // la-la I'm writing code... la-la Nothing has been changed
 
@@ -96,6 +97,7 @@ class LooDataStorage {
         products[data.product.id] = data.product;
         localStorage.setItem(data.key, JSON.stringify(products));
         this.__updateListBarNumbers();
+        this._loadButtonsState();
 
         // send new new object to server
         this._save(data, products);
@@ -106,6 +108,7 @@ class LooDataStorage {
         delete products[data.product.id];
         localStorage.setItem(data.key, JSON.stringify(products));
         this.__updateListBarNumbers();
+        this._loadButtonsState();
 
         // send new new object to server
         this._save(data, products);
@@ -113,8 +116,10 @@ class LooDataStorage {
 
     clearList(list) {
         localStorage.setItem(list, JSON.stringify({}));
+        console.log("List cleared:", list);
         this._pushEmptyData();
         this._loadListsBar();
+        this._loadButtonsState();
     }
 
     _save(data, products) {
@@ -150,6 +155,7 @@ class LooDataStorage {
             .then((json) => {
                 localStorage.setItem(key, json.products);
                 this.__updateListBarNumbers();
+                this._loadButtonsState();
             })
             .catch((err) => {
                 console.log(err);
@@ -166,9 +172,12 @@ class LooDataStorage {
             buttons.forEach((button) => {
                 const products = JSON.parse(
                     localStorage.getItem(button.dataset.key)
-                );
+                ) || {};
+
                 if (products[buttonsContainer.dataset.productId]) {
                     button.classList.add(this.__buttonAddedClass);
+                } else {
+                    button.classList.remove(this.__buttonAddedClass);
                 }
             });
         }
